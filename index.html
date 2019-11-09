@@ -137,6 +137,24 @@
 			<input type="number" min="1" max="9" id="81">
 		</div>
 	</div>
+	<script src="jquery.min.js"></script>
+	<script>
+		var Sudoku = function() {
+			console.log("Hier bin ich.");
+		};
+		
+		$("input").on("keyup", function() {
+			var number_of_entries = 0;
+			$("input").each(function() {
+				if ($(this).val() !== "") {
+					number_of_entries += 1;
+				}
+			});
+			if (number_of_entries >= 17) {
+				var sudoku = new Sudoku();
+			}
+		});
+	</script>
 </body>
 
 </html>
