@@ -142,6 +142,13 @@
 	</div>
 	<script src="jquery.min.js"></script>
 	<script>
+		function listeOhne(liste, wert) {
+			var index = liste.indexOf(wert);
+			if (index > -1) {
+				liste.splice(index, 1);
+			}
+			return liste;
+		}
 		var Kaestchen = function(i) {
 			this.nummer = i;
 			this.$element = $('#' + i);
@@ -151,13 +158,20 @@
 			this.wert = this.$element.val();
 		};
 		Kaestchen.prototype.geht_nicht = function(zahl) {
-			if (zahl === this.wert){
+			zahl = parseInt(zahl);
+			if (zahl == this.wert){
 				this.$element.addClass("error");
 				return -1;
 			}
+			if (this.wert !== ""){
+				return;
+			}
 			var index = this.Moeglichkeiten.indexOf(zahl);
 			if (index >=0) {
-				this.Moeglichkeiten.splice(index, 1);
+				this.Moeglichkeiten = this.Moeglichkeiten.splice(index, 1);
+			}
+			if (this.Moeglichkeiten.length ===1) {
+				this.$element.val(this.Moeglichkeiten[0]);
 			}
 		};
 		Kaestchen.prototype.getZeile = function() {
@@ -177,8 +191,15 @@
 			var nummerOben = this.nummer % 9;
 			var spalte = [];
 			var i;
+			var j;
+			if (nummerOben === 0) {
+				nummerOben = 9;
+			}
 			for (i = 0; i < 81; i += 9) {
-				spalte.push(nummerOben + i);
+				j = nummerOben + i;
+				if (j!== this.nummer){
+					spalte.push(j);
+				}
 			}
 			return spalte;
 		};
@@ -195,9 +216,12 @@
 				[61, 62, 63, 70, 71, 72, 79, 80, 81],
 			];
 			var i;
+			var block;
 			for (i = 0; i < 9; i++) {
 				if ($.inArray(this.nummer, bloecke[i]) >= 0) {
-					return bloecke[i];
+					block = bloecke[i];
+					block = listeOhne(block, this.nummer);
+					return block;
 				}
 			}
 		};
@@ -212,21 +236,40 @@
 			var i;
 			var wert;
 			var zeile;
+			var block;
+			var spalte;
 			var j;
 			var status;
+			var k;
 			$("input").removeClass("error");
-			for(i=1;i<=81;i=i+1)  {
-				wert = this.kaestchen[i].wert;
-				if (wert!==""){
-					zeile=this.kaestchen[i].getZeile();
-					for(j=0;j<zeile.length;j++) {
-						status = this.kaestchen[zeile[j]].geht_nicht(wert);
-						if (status === -1) {
-							return;
+			//for (k=1;k<100;k++){
+				for(i=1;i<=81;i=i+1)  {
+					wert = this.kaestchen[i].wert;
+					if (wert!==""){
+						zeile=this.kaestchen[i].getZeile();
+						for(j=0;j<zeile.length;j++) {
+							status = this.kaestchen[zeile[j]].geht_nicht(wert);
+							if (status === -1) {
+								return;
+							}
+						}
+						spalte=this.kaestchen[i].getSpalte();
+						for(j=0;j<spalte.length;j++) {
+							status = this.kaestchen[spalte[j]].geht_nicht(wert);
+							if (status === -1) {
+								return;
+							}
+						}
+						block=this.kaestchen[i].getBlock();
+						for(j=0;j<block.length;j++) {
+							status = this.kaestchen[block[j]].geht_nicht(wert);
+							if (status === -1) {
+								return;
+							}
 						}
 					}
 				}
-			}
+			//}
 		};
 		
 		var sudoku;
