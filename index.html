@@ -38,6 +38,9 @@
 			content: "";
 			display: block;
 		}
+		.error{
+			background-color:red;
+		}
 	</style>
 </head>
 
@@ -148,6 +151,10 @@
 			this.wert = this.$element.val();
 		};
 		Kaestchen.prototype.geht_nicht = function(zahl) {
+			if (zahl === this.wert){
+				this.$element.addClass("error");
+				return -1;
+			}
 			var index = this.Moeglichkeiten.indexOf(zahl);
 			if (index >=0) {
 				this.Moeglichkeiten.splice(index, 1);
@@ -157,8 +164,12 @@
 			var nummerLinks = Math.floor((this.nummer - 1) / 9 ) * 9 + 1;
 			var zeile = [];
 			var i;
+			var j;
 			for (i = 0; i < 9; i++) {
-				zeile.push(nummerLinks + i);
+				j= nummerLinks+i;
+				if (j!== this.nummer){
+					zeile.push(j);
+				}
 			}
 			return zeile;
 		};
@@ -196,9 +207,26 @@
 			for(i=1;i<=81;i=i+1) {
 				this.kaestchen[i]=new Kaestchen(i);
 			}
-			console.log(this.kaestchen);
 		};
 		Sudoku.prototype.loesen = function () {
+			var i;
+			var wert;
+			var zeile;
+			var j;
+			var status;
+			$("input").removeClass("error");
+			for(i=1;i<=81;i=i+1)  {
+				wert = this.kaestchen[i].wert;
+				if (wert!==""){
+					zeile=this.kaestchen[i].getZeile();
+					for(j=0;j<zeile.length;j++) {
+						status = this.kaestchen[zeile[j]].geht_nicht(wert);
+						if (status === -1) {
+							return;
+						}
+					}
+				}
+			}
 		};
 		
 		var sudoku;
