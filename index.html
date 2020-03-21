@@ -168,7 +168,7 @@
 			}
 			var index = this.Moeglichkeiten.indexOf(zahl);
 			if (index >=0) {
-				this.Moeglichkeiten = this.Moeglichkeiten.splice(index, 1);
+				this.Moeglichkeiten.splice(index, 1);
 			}
 			if (this.Moeglichkeiten.length ===1) {
 				this.$element.val(this.Moeglichkeiten[0]);
@@ -242,7 +242,7 @@
 			var status;
 			var k;
 			$("input").removeClass("error");
-			//for (k=1;k<100;k++){
+			for (k=1;k<10;k++){
 				for(i=1;i<=81;i=i+1)  {
 					wert = this.kaestchen[i].wert;
 					if (wert!==""){
@@ -269,7 +269,7 @@
 						}
 					}
 				}
-			//}
+			}
 		};
 		
 		var sudoku;
